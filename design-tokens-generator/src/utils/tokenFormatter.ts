@@ -9,7 +9,8 @@ import type {
   ThemeColorScale,
   NeutralColorScale,
   SemanticColors,
-  ExtendedSemantic
+  ExtendedSemantic,
+  SemanticColorScale
 } from '../types';
 
 /**
@@ -47,6 +48,23 @@ function formatNeutralColorScale(scale: NeutralColorScale): Record<string, { val
 }
 
 /**
+ * 将语义色阶数组转换为 Tokens Studio 格式
+ */
+function formatSemanticColorScale(scale: SemanticColorScale): Record<string, { value: string; type: string }> {
+  const result: Record<string, { value: string; type: string }> = {};
+
+  scale.forEach((color: ColorToken) => {
+    const key = color.name.replace(/semantic-\w+-/, '');
+    result[key] = {
+      value: color.value,
+      type: color.type
+    };
+  });
+
+  return result;
+}
+
+/**
  * 将语义色转换为 Tokens Studio 格式
  */
 function formatSemanticColors(semantic: SemanticColors): {
@@ -55,17 +73,11 @@ function formatSemanticColors(semantic: SemanticColors): {
   warning: Record<string, { value: string; type: string }>;
   info: Record<string, { value: string; type: string }>;
 } {
-  const formatVariant = (variant: { default: ColorToken; light: ColorToken; dark: ColorToken }) => ({
-    default: { value: variant.default.value, type: 'color' },
-    light: { value: variant.light.value, type: 'color' },
-    dark: { value: variant.dark.value, type: 'color' }
-  });
-
   return {
-    success: formatVariant(semantic.success),
-    danger: formatVariant(semantic.danger),
-    warning: formatVariant(semantic.warning),
-    info: formatVariant(semantic.info)
+    success: formatSemanticColorScale(semantic.success),
+    danger: formatSemanticColorScale(semantic.danger),
+    warning: formatSemanticColorScale(semantic.warning),
+    info: formatSemanticColorScale(semantic.info)
   };
 }
 
@@ -111,20 +123,16 @@ export function formatTokensForExport(tokens: GeneratedTokens): ExportFormat {
     }
   };
 
-  // 添加主题色阶
   format.tokens.color.primary = formatThemeColorScale(tokens.themeColorScale);
 
-  // 添加中性色阶
   if (tokens.neutralColorScale) {
     format.tokens.color.neutral = formatNeutralColorScale(tokens.neutralColorScale);
   }
 
-  // 添加语义色
   if (tokens.semanticColors) {
     format.tokens.color.semantic = formatSemanticColors(tokens.semanticColors);
   }
 
-  // 添加扩展语义色
   if (tokens.extendedSemantic) {
     format.tokens.color.extended = formatExtendedSemantic(tokens.extendedSemantic);
   }
@@ -200,7 +208,6 @@ export function validateTokensStudioJson(json: string): { valid: boolean; errors
   try {
     const data = JSON.parse(json);
 
-    // 检查必需的结构
     if (!data.tokens) {
       errors.push('Missing "tokens" property');
     }
@@ -209,7 +216,6 @@ export function validateTokensStudioJson(json: string): { valid: boolean; errors
       errors.push('Missing "tokens.color" property');
     }
 
-    // 检查元数据
     if (!data.$metadata) {
       errors.push('Missing "$metadata" property');
     }
@@ -222,7 +228,6 @@ export function validateTokensStudioJson(json: string): { valid: boolean; errors
       errors.push('Missing "$metadata.generatedAt" property');
     }
 
-    // 验证颜色值格式
     const validateColorValues = (obj: any, path: string = 'root') => {
       if (typeof obj === 'object' && obj !== null) {
         if (obj.value && typeof obj.value === 'string') {
@@ -280,14 +285,28 @@ export function generateSampleTokensStudioJson(): ExportFormat {
         },
         semantic: {
           success: {
-            default: { value: '#22c55e', type: 'color' },
-            light: { value: '#86efac', type: 'color' },
-            dark: { value: '#15803d', type: 'color' }
+            '50': { value: '#f0fdf4', type: 'color' },
+            '100': { value: '#dcfce7', type: 'color' },
+            '200': { value: '#bbf7d0', type: 'color' },
+            '300': { value: '#86efac', type: 'color' },
+            '400': { value: '#4ade80', type: 'color' },
+            '500': { value: '#22c55e', type: 'color' },
+            '600': { value: '#16a34a', type: 'color' },
+            '700': { value: '#15803d', type: 'color' },
+            '800': { value: '#166534', type: 'color' },
+            '900': { value: '#14532d', type: 'color' }
           },
           danger: {
-            default: { value: '#ef4444', type: 'color' },
-            light: { value: '#fca5a5', type: 'color' },
-            dark: { value: '#b91c1c', type: 'color' }
+            '50': { value: '#fef2f2', type: 'color' },
+            '100': { value: '#fee2e2', type: 'color' },
+            '200': { value: '#fecaca', type: 'color' },
+            '300': { value: '#fca5a5', type: 'color' },
+            '400': { value: '#f87171', type: 'color' },
+            '500': { value: '#ef4444', type: 'color' },
+            '600': { value: '#dc2626', type: 'color' },
+            '700': { value: '#b91c1c', type: 'color' },
+            '800': { value: '#991b1b', type: 'color' },
+            '900': { value: '#7f1d1d', type: 'color' }
           }
         }
       }

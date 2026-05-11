@@ -43,7 +43,7 @@ export function useColorGenerator(): UseColorGeneratorReturn {
     } : null;
 
     const semanticColors: SemanticColors | null = config.includeSemantic ? {
-      ...generateSemanticColors()
+      ...generateSemanticColors(config.scaleCount)
     } : null;
 
     const extendedSemantic: ExtendedSemantic | null = config.includeExtended ? {

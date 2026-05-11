@@ -12,35 +12,36 @@ export function generateThemeColorScale(
   baseColor: string,
   steps: number = 10
 ): ColorToken[] {
-  const [baseH, baseS] = hexToHsl(baseColor);
+  const [baseH, baseS, baseL] = hexToHsl(baseColor);
   const scale: ColorToken[] = [];
 
-  // 生成色阶命名
   const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
-    const position = i / (steps - 1); // 0 到 1
+    const position = i / (steps - 1);
 
-    // 根据位置调整亮度和饱和度
     let s = baseS;
     let l: number;
 
     if (position <= 0.5) {
-      // 浅色部分 (0 - 500)
       l = 95 - (position * 2) * 75;
       s = baseS - 10 + (position * 2) * 15;
     } else {
-      // 深色部分 (500 - 900)
       const darkPos = (position - 0.5) * 2;
       l = 20 + (1 - darkPos) * 55;
       s = baseS + 5 - darkPos * 10;
     }
 
-    // 确保值在合理范围内
     s = Math.max(5, Math.min(100, s));
     l = Math.max(5, Math.min(95, l));
 
-    const hex = hslToHex(baseH, s, l);
+    let hex = hslToHex(baseH, s, l);
+
+    if (i === Math.floor(steps / 2)) {
+      hex = baseColor;
+      l = baseL;
+    }
+
     scale.push({
       name: `primary-${names[i]}`,
       value: hex,
@@ -84,7 +85,6 @@ export function generateNeutralColorScale(
 export function generateExtendedNeutrals(): ColorToken[] {
   const neutrals: ColorToken[] = [];
 
-  // 纯灰
   for (let i = 0; i <= 900; i += 100) {
     if (i === 0) i = 50;
     const l = 95 - (i / 900) * 85;
@@ -97,7 +97,6 @@ export function generateExtendedNeutrals(): ColorToken[] {
     if (i === 50) i = 0;
   }
 
-  // 冷灰 (略带蓝色)
   const coolGrayHue = 220;
   for (let i = 50; i <= 700; i += 100) {
     const l = 92 - (i / 700) * 70;
@@ -109,7 +108,6 @@ export function generateExtendedNeutrals(): ColorToken[] {
     });
   }
 
-  // 暖灰 (略带橙色)
   const warmGrayHue = 30;
   for (let i = 50; i <= 700; i += 100) {
     const l = 90 - (i / 700) * 65;
@@ -138,7 +136,6 @@ function generateScaleNames(steps: number): string[] {
     return ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
   }
 
-  // 动态生成命名
   const names: string[] = [];
   const standardNames = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
 
@@ -149,7 +146,6 @@ function generateScaleNames(steps: number): string[] {
       names.push(standardNames[index]);
     }
   } else {
-    // 如果需要更多级别，插入中间值
     for (let i = 0; i < steps; i++) {
       const value = Math.round((i / (steps - 1)) * 1000);
       names.push(String(value));

@@ -24,27 +24,13 @@ export interface NeutralColorScale {
   scale: ColorToken[];
 }
 
+export type SemanticColorScale = ColorToken[];
+
 export interface SemanticColors {
-  success: {
-    default: ColorToken;
-    light: ColorToken;
-    dark: ColorToken;
-  };
-  danger: {
-    default: ColorToken;
-    light: ColorToken;
-    dark: ColorToken;
-  };
-  warning: {
-    default: ColorToken;
-    light: ColorToken;
-    dark: ColorToken;
-  };
-  info: {
-    default: ColorToken;
-    light: ColorToken;
-    dark: ColorToken;
-  };
+  success: SemanticColorScale;
+  danger: SemanticColorScale;
+  warning: SemanticColorScale;
+  info: SemanticColorScale;
 }
 
 export interface ExtendedSemantic {

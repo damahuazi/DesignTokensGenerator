@@ -11,7 +11,7 @@ interface PreviewPanelProps {
   tokens: GeneratedTokens | null;
 }
 
-type TabKey = 'theme' | 'neutral' | 'semantic' | 'extended' | 'preview';
+type TabKey = 'theme' | 'neutral' | 'semantic' | 'extended';
 
 export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
   const [activeTab, setActiveTab] = useState<TabKey>('theme');
@@ -98,6 +98,9 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
           <div className="space-y-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-text-primary">基础语义色</h3>
+              <span className="text-sm text-text-secondary">
+                {tokens.semanticColors.success.length} 阶
+              </span>
             </div>
 
             {[
@@ -120,10 +123,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
                 </button>
 
                 {!collapsedSections[section.key] && (
-                  <div className="grid grid-cols-3 gap-4">
-                    <ColorCard color={section.colors.light} />
-                    <ColorCard color={section.colors.default} />
-                    <ColorCard color={section.colors.dark} />
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {section.colors.map((color) => (
+                      <ColorCard key={color.name} color={color} />
+                    ))}
                   </div>
                 )}
               </div>
