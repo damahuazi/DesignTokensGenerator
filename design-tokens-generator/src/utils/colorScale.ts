@@ -7,6 +7,7 @@ import type { ColorToken } from '../types';
 
 /**
  * 生成主题色阶
+ * 以输入的主题色为中心，向两侧自然过渡
  */
 export function generateThemeColorScale(
   baseColor: string,
@@ -14,41 +15,42 @@ export function generateThemeColorScale(
 ): ColorToken[] {
   const [baseH, baseS, baseL] = hexToHsl(baseColor);
   const scale: ColorToken[] = [];
-
-  const names = generateScaleNames(steps);
+  const midIndex = Math.floor(steps / 2);
 
   for (let i = 0; i < steps; i++) {
-    const position = i / (steps - 1);
-
+    let h = baseH;
     let s = baseS;
-    let l: number;
+    let l = baseL;
 
-    if (position <= 0.5) {
-      l = 95 - (position * 2) * 75;
-      s = baseS - 10 + (position * 2) * 15;
-    } else {
-      const darkPos = (position - 0.5) * 2;
-      l = 20 + (1 - darkPos) * 55;
-      s = baseS + 5 - darkPos * 10;
+    if (i < midIndex) {
+      const ratio = i / midIndex;
+      l = baseL + (95 - baseL) * (1 - ratio);
+      s = baseS * (0.3 + 0.7 * ratio);
+    } else if (i > midIndex) {
+      const ratio = (i - midIndex) / (steps - 1 - midIndex);
+      l = baseL * (1 - ratio * 0.85);
+      s = baseS * (1 + ratio * 0.15);
     }
 
     s = Math.max(5, Math.min(100, s));
     l = Math.max(5, Math.min(95, l));
 
-    let hex = hslToHex(baseH, s, l);
-
-    if (i === Math.floor(steps / 2)) {
-      hex = baseColor;
-      l = baseL;
-    }
+    const hex = hslToHex(h, s, l);
 
     scale.push({
       name: `primary-${i}`,
       value: hex,
       type: 'color',
-      description: `${names[i]} 主题色阶`
+      description: `主题色阶 ${i}`
     });
   }
+
+  scale[midIndex] = {
+    name: `primary-${midIndex}`,
+    value: baseColor,
+    type: 'color',
+    description: `主题色阶 ${midIndex} (基准色)`
+  };
 
   return scale;
 }
@@ -60,19 +62,18 @@ export function generateNeutralColorScale(
   steps: number = 10
 ): ColorToken[] {
   const scale: ColorToken[] = [];
-  const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
     const position = i / (steps - 1);
-    const l = 95 - position * 90;
-    const s = Math.max(0, 3 - position * 3);
+    const l = 98 - position * 93;
+    const s = Math.max(0, 2 - position * 2);
 
     const hex = hslToHex(0, s, l);
     scale.push({
       name: `neutral-${i}`,
       value: hex,
       type: 'color',
-      description: `${names[i]} 中性灰`
+      description: `中性灰阶 ${i}`
     });
   }
 
@@ -120,13 +121,6 @@ export function generateExtendedNeutrals(): ColorToken[] {
   }
 
   return neutrals;
-}
-
-/**
- * 生成色阶命名（从0开始）
- */
-function generateScaleNames(steps: number): string[] {
-  return Array.from({ length: steps }, (_, i) => String(i));
 }
 
 /**
