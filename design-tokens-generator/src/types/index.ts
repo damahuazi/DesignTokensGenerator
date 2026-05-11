@@ -1,5 +1,5 @@
 /**
- * 设计变量生成器 - 类型定义文件
+ * 类型定义文件
  */
 
 export interface ColorToken {
@@ -7,6 +7,7 @@ export interface ColorToken {
   value: string;
   type: string;
   description?: string;
+  $value?: string;
 }
 
 export interface TokenGroup {
@@ -33,41 +34,49 @@ export interface SemanticColors {
   info: SemanticColorScale;
 }
 
+export interface ExtendedSemanticColor {
+  name: string;
+  value: string;
+  type: string;
+  description?: string;
+  reference?: string;
+}
+
 export interface ExtendedSemantic {
   background: {
-    default: ColorToken;
-    subtle: ColorToken;
-    muted: ColorToken;
-    inverse: ColorToken;
+    default: ExtendedSemanticColor;
+    subtle: ExtendedSemanticColor;
+    muted: ExtendedSemanticColor;
+    inverse: ExtendedSemanticColor;
   };
   foreground: {
-    default: ColorToken;
-    muted: ColorToken;
-    subtle: ColorToken;
-    inverse: ColorToken;
+    default: ExtendedSemanticColor;
+    muted: ExtendedSemanticColor;
+    subtle: ExtendedSemanticColor;
+    inverse: ExtendedSemanticColor;
   };
   border: {
-    default: ColorToken;
-    muted: ColorToken;
-    subtle: ColorToken;
+    default: ExtendedSemanticColor;
+    muted: ExtendedSemanticColor;
+    subtle: ExtendedSemanticColor;
   };
   ring: {
-    default: ColorToken;
+    default: ExtendedSemanticColor;
   };
   overlay: {
-    default: ColorToken;
+    default: ExtendedSemanticColor;
   };
   accent: {
-    default: ColorToken;
-    foreground: ColorToken;
+    default: ExtendedSemanticColor;
+    foreground: ExtendedSemanticColor;
   };
   destructive: {
-    default: ColorToken;
-    foreground: ColorToken;
+    default: ExtendedSemanticColor;
+    foreground: ExtendedSemanticColor;
   };
   input: {
-    default: ColorToken;
-    border: ColorToken;
+    default: ExtendedSemanticColor;
+    border: ExtendedSemanticColor;
   };
 }
 

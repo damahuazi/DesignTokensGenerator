@@ -3,7 +3,7 @@
  */
 
 import { hslToHex } from './colorConversion';
-import type { SemanticColors, SemanticColorScale, ExtendedSemantic, ColorToken } from '../types';
+import type { SemanticColors, SemanticColorScale, ExtendedSemantic, ExtendedSemanticColor } from '../types';
 
 /**
  * 生成基础语义色
@@ -122,146 +122,183 @@ function generateInfoColorScale(steps: number): SemanticColorScale {
 }
 
 /**
- * 生成扩展语义色（引用基础色阶）
+ * 创建带引用的扩展语义色
+ */
+function createReferencedColor(
+  name: string,
+  value: string,
+  reference: string,
+  description: string
+): ExtendedSemanticColor {
+  return {
+    name,
+    value,
+    type: 'color',
+    description,
+    reference
+  };
+}
+
+/**
+ * 创建固定值的扩展语义色
+ */
+function createStaticColor(
+  name: string,
+  value: string,
+  description: string
+): ExtendedSemanticColor {
+  return {
+    name,
+    value,
+    type: 'color',
+    description
+  };
+}
+
+/**
+ * 生成扩展语义色（使用引用语法）
  */
 export function generateExtendedSemantic(
-  themeColorScale: ColorToken[],
-  neutralColorScale: ColorToken[],
+  themeColorScale: { name: string; scale: { name: string; value: string }[] },
+  neutralColorScale: { name: string; scale: { name: string; value: string }[] },
   semanticColors: SemanticColors,
   scaleCount: number
 ): ExtendedSemantic {
   const midIndex = Math.floor(scaleCount / 2);
+  const neutralLastIndex = Math.floor(scaleCount * 0.98);
+  const neutralMidIndex = Math.floor(scaleCount * 0.95);
+  const neutralBorderIndex = Math.floor(scaleCount * 0.85);
+  const neutralBorderMutedIndex = Math.floor(scaleCount * 0.8);
+  const neutralSubtleIndex = Math.floor(scaleCount * 0.7);
+  const neutralMutedIndex = Math.floor(scaleCount * 0.5);
 
   return {
     background: {
-      default: {
-        name: 'background-default',
-        value: '#ffffff',
-        type: 'color',
-        description: '默认背景色 - 继承 white'
-      },
-      subtle: {
-        name: 'background-subtle',
-        value: neutralColorScale[Math.floor(scaleCount * 0.98)].value,
-        type: 'color',
-        description: `浅背景色 - 继承 neutral.${Math.floor(scaleCount * 0.98)}`
-      },
-      muted: {
-        name: 'background-muted',
-        value: neutralColorScale[Math.floor(scaleCount * 0.95)].value,
-        type: 'color',
-        description: `柔和背景色 - 继承 neutral.${Math.floor(scaleCount * 0.95)}`
-      },
-      inverse: {
-        name: 'background-inverse',
-        value: themeColorScale[scaleCount - 1].value,
-        type: 'color',
-        description: `反色背景 - 继承 primary.${scaleCount - 1}`
-      }
+      default: createStaticColor(
+        'background-default',
+        '#ffffff',
+        '默认背景色 - 固定值 white'
+      ),
+      subtle: createReferencedColor(
+        'background-subtle',
+        neutralColorScale.scale[neutralLastIndex].value,
+        `{color.neutral.${neutralLastIndex}}`,
+        `浅背景色 - 引用 neutral.${neutralLastIndex}`
+      ),
+      muted: createReferencedColor(
+        'background-muted',
+        neutralColorScale.scale[neutralMidIndex].value,
+        `{color.neutral.${neutralMidIndex}}`,
+        `柔和背景色 - 引用 neutral.${neutralMidIndex}`
+      ),
+      inverse: createReferencedColor(
+        'background-inverse',
+        themeColorScale.scale[scaleCount - 1].value,
+        `{color.primary.${scaleCount - 1}}`,
+        `反色背景 - 引用 primary.${scaleCount - 1}`
+      )
     },
     foreground: {
-      default: {
-        name: 'foreground-default',
-        value: neutralColorScale[1].value,
-        type: 'color',
-        description: `默认文字色 - 继承 neutral.1`
-      },
-      muted: {
-        name: 'foreground-muted',
-        value: neutralColorScale[Math.floor(scaleCount * 0.5)].value,
-        type: 'color',
-        description: `柔和文字色 - 继承 neutral.${Math.floor(scaleCount * 0.5)}`
-      },
-      subtle: {
-        name: 'foreground-subtle',
-        value: neutralColorScale[Math.floor(scaleCount * 0.7)].value,
-        type: 'color',
-        description: `浅文字色 - 继承 neutral.${Math.floor(scaleCount * 0.7)}`
-      },
-      inverse: {
-        name: 'foreground-inverse',
-        value: '#ffffff',
-        type: 'color',
-        description: '反色文字 - 继承 white'
-      }
+      default: createReferencedColor(
+        'foreground-default',
+        neutralColorScale.scale[1].value,
+        '{color.neutral.1}',
+        '默认文字色 - 引用 neutral.1'
+      ),
+      muted: createReferencedColor(
+        'foreground-muted',
+        neutralColorScale.scale[neutralMutedIndex].value,
+        `{color.neutral.${neutralMutedIndex}}`,
+        `柔和文字色 - 引用 neutral.${neutralMutedIndex}`
+      ),
+      subtle: createReferencedColor(
+        'foreground-subtle',
+        neutralColorScale.scale[neutralSubtleIndex].value,
+        `{color.neutral.${neutralSubtleIndex}}`,
+        `浅文字色 - 引用 neutral.${neutralSubtleIndex}`
+      ),
+      inverse: createStaticColor(
+        'foreground-inverse',
+        '#ffffff',
+        '反色文字 - 固定值 white'
+      )
     },
     border: {
-      default: {
-        name: 'border-default',
-        value: neutralColorScale[Math.floor(scaleCount * 0.85)].value,
-        type: 'color',
-        description: `默认边框色 - 继承 neutral.${Math.floor(scaleCount * 0.85)}`
-      },
-      muted: {
-        name: 'border-muted',
-        value: neutralColorScale[Math.floor(scaleCount * 0.8)].value,
-        type: 'color',
-        description: `柔和边框色 - 继承 neutral.${Math.floor(scaleCount * 0.8)}`
-      },
-      subtle: {
-        name: 'border-subtle',
-        value: neutralColorScale[Math.floor(scaleCount * 0.95)].value,
-        type: 'color',
-        description: `浅边框色 - 继承 neutral.${Math.floor(scaleCount * 0.95)}`
-      }
+      default: createReferencedColor(
+        'border-default',
+        neutralColorScale.scale[neutralBorderIndex].value,
+        `{color.neutral.${neutralBorderIndex}}`,
+        `默认边框色 - 引用 neutral.${neutralBorderIndex}`
+      ),
+      muted: createReferencedColor(
+        'border-muted',
+        neutralColorScale.scale[neutralBorderMutedIndex].value,
+        `{color.neutral.${neutralBorderMutedIndex}}`,
+        `柔和边框色 - 引用 neutral.${neutralBorderMutedIndex}`
+      ),
+      subtle: createReferencedColor(
+        'border-subtle',
+        neutralColorScale.scale[neutralMidIndex].value,
+        `{color.neutral.${neutralMidIndex}}`,
+        `浅边框色 - 引用 neutral.${neutralMidIndex}`
+      )
     },
     ring: {
-      default: {
-        name: 'ring-default',
-        value: themeColorScale[midIndex].value,
-        type: 'color',
-        description: `焦点环 - 继承 primary.${midIndex}`
-      }
+      default: createReferencedColor(
+        'ring-default',
+        themeColorScale.scale[midIndex].value,
+        `{color.primary.${midIndex}}`,
+        `焦点环 - 引用 primary.${midIndex}`
+      )
     },
     overlay: {
-      default: {
-        name: 'overlay-default',
-        value: neutralColorScale[scaleCount - 2].value,
-        type: 'color',
-        description: `遮罩层 - 继承 neutral.${scaleCount - 2}`
-      }
+      default: createReferencedColor(
+        'overlay-default',
+        neutralColorScale.scale[scaleCount - 2].value,
+        `{color.neutral.${scaleCount - 2}}`,
+        `遮罩层 - 引用 neutral.${scaleCount - 2}`
+      )
     },
     accent: {
-      default: {
-        name: 'accent-default',
-        value: themeColorScale[midIndex].value,
-        type: 'color',
-        description: `强调色 - 继承 primary.${midIndex}`
-      },
-      foreground: {
-        name: 'accent-foreground',
-        value: neutralColorScale[Math.floor(scaleCount * 0.98)].value,
-        type: 'color',
-        description: `强调色上的文字 - 继承 neutral.${Math.floor(scaleCount * 0.98)}`
-      }
+      default: createReferencedColor(
+        'accent-default',
+        themeColorScale.scale[midIndex].value,
+        `{color.primary.${midIndex}}`,
+        `强调色 - 引用 primary.${midIndex}`
+      ),
+      foreground: createReferencedColor(
+        'accent-foreground',
+        neutralColorScale.scale[neutralLastIndex].value,
+        `{color.neutral.${neutralLastIndex}}`,
+        `强调色上的文字 - 引用 neutral.${neutralLastIndex}`
+      )
     },
     destructive: {
-      default: {
-        name: 'destructive-default',
-        value: semanticColors.danger[midIndex].value,
-        type: 'color',
-        description: `破坏性操作 - 继承 semantic-danger.${midIndex}`
-      },
-      foreground: {
-        name: 'destructive-foreground',
-        value: '#ffffff',
-        type: 'color',
-        description: '破坏性操作色上的文字 - 继承 white'
-      }
+      default: createReferencedColor(
+        'destructive-default',
+        semanticColors.danger[midIndex].value,
+        `{color.semantic.danger.${midIndex}}`,
+        `破坏性操作 - 引用 semantic.danger.${midIndex}`
+      ),
+      foreground: createStaticColor(
+        'destructive-foreground',
+        '#ffffff',
+        '破坏性操作色上的文字 - 固定值 white'
+      )
     },
     input: {
-      default: {
-        name: 'input-default',
-        value: neutralColorScale[0].value,
-        type: 'color',
-        description: `输入框背景 - 继承 neutral.0`
-      },
-      border: {
-        name: 'input-border',
-        value: neutralColorScale[Math.floor(scaleCount * 0.8)].value,
-        type: 'color',
-        description: `输入框边框 - 继承 neutral.${Math.floor(scaleCount * 0.8)}`
-      }
+      default: createReferencedColor(
+        'input-default',
+        neutralColorScale.scale[0].value,
+        '{color.neutral.0}',
+        '输入框背景 - 引用 neutral.0'
+      ),
+      border: createReferencedColor(
+        'input-border',
+        neutralColorScale.scale[neutralBorderMutedIndex].value,
+        `{color.neutral.${neutralBorderMutedIndex}}`,
+        `输入框边框 - 引用 neutral.${neutralBorderMutedIndex}`
+      )
     }
   };
 }

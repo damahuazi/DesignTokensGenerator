@@ -10,7 +10,8 @@ import type {
   NeutralColorScale,
   SemanticColors,
   ExtendedSemantic,
-  SemanticColorScale
+  SemanticColorScale,
+  ExtendedSemanticColor
 } from '../types';
 
 /**
@@ -87,11 +88,11 @@ function formatSemanticColors(semantic: SemanticColors): {
 function formatExtendedSemantic(extended: ExtendedSemantic): Record<string, Record<string, { value: string; type: string }>> {
   const result: Record<string, Record<string, { value: string; type: string }>> = {};
 
-  const processGroup = (group: Record<string, ColorToken>, groupName: string) => {
+  const processGroup = (group: Record<string, ExtendedSemanticColor>, groupName: string) => {
     result[groupName] = {};
     Object.entries(group).forEach(([key, color]) => {
       result[groupName][key] = {
-        value: color.value,
+        value: color.reference || color.value,
         type: color.type
       };
     });
@@ -232,7 +233,8 @@ export function validateTokensStudioJson(json: string): { valid: boolean; errors
       if (typeof obj === 'object' && obj !== null) {
         if (obj.value && typeof obj.value === 'string') {
           if (!/^#[0-9A-Fa-f]{6}$/.test(obj.value) &&
-              !/^rgba?\(/.test(obj.value)) {
+              !/^rgba?\(/.test(obj.value) &&
+              !/^\{.*\}$/.test(obj.value)) {
             errors.push(`Invalid color value at ${path}`);
           }
         } else if (obj.type === 'color' && !obj.value) {
