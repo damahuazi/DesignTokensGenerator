@@ -3,7 +3,7 @@
  */
 
 import { hslToHex, hexToHsl } from './colorConversion';
-import type { SemanticColors, SemanticColorScale, ExtendedSemantic } from '../types';
+import type { SemanticColors, SemanticColorScale, ExtendedSemantic, ColorToken } from '../types';
 
 /**
  * 生成基础语义色
@@ -23,7 +23,6 @@ export function generateSemanticColors(scaleCount: number): SemanticColors {
 function generateSuccessColorScale(steps: number): SemanticColorScale {
   const greenH = 145;
   const scale: SemanticColorScale = [];
-  const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
     const position = i / (steps - 1);
@@ -34,10 +33,10 @@ function generateSuccessColorScale(steps: number): SemanticColorScale {
     l = Math.max(20, Math.min(85, l));
 
     scale.push({
-      name: `semantic-success-${names[i]}`,
+      name: `semantic-success-${i}`,
       value: hslToHex(greenH, s, l),
       type: 'color',
-      description: `成功色 ${names[i]}`
+      description: `成功色阶 ${i}`
     });
   }
 
@@ -50,7 +49,6 @@ function generateSuccessColorScale(steps: number): SemanticColorScale {
 function generateDangerColorScale(steps: number): SemanticColorScale {
   const redH = 0;
   const scale: SemanticColorScale = [];
-  const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
     const position = i / (steps - 1);
@@ -61,10 +59,10 @@ function generateDangerColorScale(steps: number): SemanticColorScale {
     l = Math.max(25, Math.min(80, l));
 
     scale.push({
-      name: `semantic-danger-${names[i]}`,
+      name: `semantic-danger-${i}`,
       value: hslToHex(redH, s, l),
       type: 'color',
-      description: `危险色 ${names[i]}`
+      description: `危险色阶 ${i}`
     });
   }
 
@@ -77,7 +75,6 @@ function generateDangerColorScale(steps: number): SemanticColorScale {
 function generateWarningColorScale(steps: number): SemanticColorScale {
   const orangeH = 35;
   const scale: SemanticColorScale = [];
-  const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
     const position = i / (steps - 1);
@@ -88,10 +85,10 @@ function generateWarningColorScale(steps: number): SemanticColorScale {
     l = Math.max(30, Math.min(85, l));
 
     scale.push({
-      name: `semantic-warning-${names[i]}`,
+      name: `semantic-warning-${i}`,
       value: hslToHex(orangeH, s, l),
       type: 'color',
-      description: `警告色 ${names[i]}`
+      description: `警告色阶 ${i}`
     });
   }
 
@@ -104,7 +101,6 @@ function generateWarningColorScale(steps: number): SemanticColorScale {
 function generateInfoColorScale(steps: number): SemanticColorScale {
   const blueH = 200;
   const scale: SemanticColorScale = [];
-  const names = generateScaleNames(steps);
 
   for (let i = 0; i < steps; i++) {
     const position = i / (steps - 1);
@@ -115,10 +111,10 @@ function generateInfoColorScale(steps: number): SemanticColorScale {
     l = Math.max(25, Math.min(85, l));
 
     scale.push({
-      name: `semantic-info-${names[i]}`,
+      name: `semantic-info-${i}`,
       value: hslToHex(blueH, s, l),
       type: 'color',
-      description: `信息色 ${names[i]}`
+      description: `信息色阶 ${i}`
     });
   }
 
@@ -126,12 +122,21 @@ function generateInfoColorScale(steps: number): SemanticColorScale {
 }
 
 /**
- * 生成扩展语义色
+ * 生成扩展语义色（引用基础色阶）
  */
 export function generateExtendedSemantic(
-  themeColor: string
+  themeColorScale: ColorToken[],
+  neutralColorScale: ColorToken[],
+  semanticColors: SemanticColors,
+  scaleCount: number
 ): ExtendedSemantic {
-  const [themeH, themeS] = hexToHsl(themeColor);
+  const [themeH, themeS] = hexToHsl(themeColorScale[Math.floor(scaleCount / 2)].value);
+  const midIndex = Math.floor(scaleCount / 2);
+
+  const getColor = (scale: ColorToken[], index: number): ColorToken => {
+    const safeIndex = Math.min(index, scale.length - 1);
+    return scale[safeIndex];
+  };
 
   return {
     background: {
@@ -139,163 +144,130 @@ export function generateExtendedSemantic(
         name: 'background-default',
         value: '#ffffff',
         type: 'color',
-        description: '默认背景色'
+        description: '默认背景色 - 继承 white'
       },
       subtle: {
         name: 'background-subtle',
-        value: hslToHex(themeH, 10, 98),
+        value: neutralColorScale[Math.floor(scaleCount * 0.98)].value,
         type: 'color',
-        description: '浅背景色'
+        description: `浅背景色 - 继承 neutral.${Math.floor(scaleCount * 0.98)}`
       },
       muted: {
         name: 'background-muted',
-        value: hslToHex(themeH, 15, 95),
+        value: neutralColorScale[Math.floor(scaleCount * 0.95)].value,
         type: 'color',
-        description: '柔和背景色'
+        description: `柔和背景色 - 继承 neutral.${Math.floor(scaleCount * 0.95)}`
       },
       inverse: {
         name: 'background-inverse',
-        value: hslToHex(themeH, themeS, 15),
+        value: themeColorScale[scaleCount - 1].value,
         type: 'color',
-        description: '反色背景'
+        description: `反色背景 - 继承 primary.${scaleCount - 1}`
       }
     },
     foreground: {
       default: {
         name: 'foreground-default',
-        value: hslToHex(themeH, 10, 10),
+        value: neutralColorScale[1].value,
         type: 'color',
-        description: '默认文字色'
+        description: `默认文字色 - 继承 neutral.1`
       },
       muted: {
         name: 'foreground-muted',
-        value: hslToHex(themeH, 5, 45),
+        value: neutralColorScale[Math.floor(scaleCount * 0.5)].value,
         type: 'color',
-        description: '柔和文字色'
+        description: `柔和文字色 - 继承 neutral.${Math.floor(scaleCount * 0.5)}`
       },
       subtle: {
         name: 'foreground-subtle',
-        value: hslToHex(themeH, 5, 60),
+        value: neutralColorScale[Math.floor(scaleCount * 0.7)].value,
         type: 'color',
-        description: '浅文字色'
+        description: `浅文字色 - 继承 neutral.${Math.floor(scaleCount * 0.7)}`
       },
       inverse: {
         name: 'foreground-inverse',
         value: '#ffffff',
         type: 'color',
-        description: '反色文字'
+        description: '反色文字 - 继承 white'
       }
     },
     border: {
       default: {
         name: 'border-default',
-        value: hslToHex(themeH, 10, 90),
+        value: neutralColorScale[Math.floor(scaleCount * 0.85)].value,
         type: 'color',
-        description: '默认边框色'
+        description: `默认边框色 - 继承 neutral.${Math.floor(scaleCount * 0.85)}`
       },
       muted: {
         name: 'border-muted',
-        value: hslToHex(themeH, 8, 85),
+        value: neutralColorScale[Math.floor(scaleCount * 0.8)].value,
         type: 'color',
-        description: '柔和边框色'
+        description: `柔和边框色 - 继承 neutral.${Math.floor(scaleCount * 0.8)}`
       },
       subtle: {
         name: 'border-subtle',
-        value: hslToHex(themeH, 5, 95),
+        value: neutralColorScale[Math.floor(scaleCount * 0.95)].value,
         type: 'color',
-        description: '浅边框色'
+        description: `浅边框色 - 继承 neutral.${Math.floor(scaleCount * 0.95)}`
       }
     },
     ring: {
       default: {
         name: 'ring-default',
-        value: themeColor,
+        value: themeColorScale[midIndex].value,
         type: 'color',
-        description: '焦点环颜色'
+        description: `焦点环 - 继承 primary.${midIndex}`
       }
     },
     overlay: {
       default: {
         name: 'overlay-default',
-        value: '#000000',
+        value: neutralColorScale[scaleCount - 2].value,
         type: 'color',
-        description: '遮罩层'
+        description: `遮罩层 - 继承 neutral.${scaleCount - 2}`
       }
     },
     accent: {
       default: {
         name: 'accent-default',
-        value: themeColor,
+        value: themeColorScale[midIndex].value,
         type: 'color',
-        description: '强调色'
+        description: `强调色 - 继承 primary.${midIndex}`
       },
       foreground: {
         name: 'accent-foreground',
-        value: hslToHex(themeH, Math.min(themeS, 90), 98),
+        value: neutralColorScale[Math.floor(scaleCount * 0.98)].value,
         type: 'color',
-        description: '强调色上的文字'
+        description: `强调色上的文字 - 继承 neutral.${Math.floor(scaleCount * 0.98)}`
       }
     },
     destructive: {
       default: {
         name: 'destructive-default',
-        value: hslToHex(0, 65, 50),
+        value: semanticColors.danger[midIndex].value,
         type: 'color',
-        description: '破坏性操作色'
+        description: `破坏性操作 - 继承 semantic-danger.${midIndex}`
       },
       foreground: {
         name: 'destructive-foreground',
         value: '#ffffff',
         type: 'color',
-        description: '破坏性操作色上的文字'
+        description: '破坏性操作色上的文字 - 继承 white'
       }
     },
     input: {
       default: {
         name: 'input-default',
-        value: hslToHex(themeH, 10, 98),
+        value: neutralColorScale[0].value,
         type: 'color',
-        description: '输入框背景'
+        description: `输入框背景 - 继承 neutral.0`
       },
       border: {
         name: 'input-border',
-        value: hslToHex(themeH, 10, 85),
+        value: neutralColorScale[Math.floor(scaleCount * 0.8)].value,
         type: 'color',
-        description: '输入框边框'
+        description: `输入框边框 - 继承 neutral.${Math.floor(scaleCount * 0.8)}`
       }
     }
   };
-}
-
-/**
- * 生成色阶命名
- */
-function generateScaleNames(steps: number): string[] {
-  if (steps === 5) {
-    return ['100', '200', '300', '400', '500'];
-  }
-  if (steps === 10) {
-    return ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'];
-  }
-  if (steps === 13) {
-    return ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
-  }
-
-  const names: string[] = [];
-  const standardNames = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
-
-  if (steps <= standardNames.length) {
-    const step = Math.floor(standardNames.length / steps);
-    for (let i = 0; i < steps; i++) {
-      const index = Math.min(i * step, standardNames.length - 1);
-      names.push(standardNames[index]);
-    }
-  } else {
-    for (let i = 0; i < steps; i++) {
-      const value = Math.round((i / (steps - 1)) * 1000);
-      names.push(String(value));
-    }
-  }
-
-  return names;
 }

@@ -43,7 +43,7 @@ export function generateThemeColorScale(
     }
 
     scale.push({
-      name: `primary-${names[i]}`,
+      name: `primary-${i}`,
       value: hex,
       type: 'color',
       description: `${names[i]} 主题色阶`
@@ -69,7 +69,7 @@ export function generateNeutralColorScale(
 
     const hex = hslToHex(0, s, l);
     scale.push({
-      name: `neutral-${names[i]}`,
+      name: `neutral-${i}`,
       value: hex,
       type: 'color',
       description: `${names[i]} 中性灰`
@@ -123,36 +123,10 @@ export function generateExtendedNeutrals(): ColorToken[] {
 }
 
 /**
- * 生成色阶命名
+ * 生成色阶命名（从0开始）
  */
 function generateScaleNames(steps: number): string[] {
-  if (steps === 5) {
-    return ['100', '200', '300', '400', '500'];
-  }
-  if (steps === 10) {
-    return ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'];
-  }
-  if (steps === 13) {
-    return ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
-  }
-
-  const names: string[] = [];
-  const standardNames = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
-
-  if (steps <= standardNames.length) {
-    const step = Math.floor(standardNames.length / steps);
-    for (let i = 0; i < steps; i++) {
-      const index = Math.min(i * step, standardNames.length - 1);
-      names.push(standardNames[index]);
-    }
-  } else {
-    for (let i = 0; i < steps; i++) {
-      const value = Math.round((i / (steps - 1)) * 1000);
-      names.push(String(value));
-    }
-  }
-
-  return names;
+  return Array.from({ length: steps }, (_, i) => String(i));
 }
 
 /**
@@ -170,10 +144,10 @@ export function generateComplementaryScale(baseColor: string, steps: number = 5)
 
     const hex = hslToHex(complementaryH, newS, newL);
     scale.push({
-      name: `complementary-${(i + 1) * 100}`,
+      name: `complementary-${i}`,
       value: hex,
       type: 'color',
-      description: `互补色 ${(i + 1) * 100}`
+      description: `互补色 ${i}`
     });
   }
 
@@ -196,7 +170,7 @@ export function generateTriadicScales(baseColor: string, steps: number = 5): { s
       const newS = s + (position > 0.5 ? 5 : -5);
 
       scale.push({
-        name: `triadic-${hue}-${(i + 1) * 100}`,
+        name: `triadic-${hue}-${i}`,
         value: hslToHex(hue, newS, newL),
         type: 'color',
         description: `三角色 ${hue}`
@@ -226,7 +200,7 @@ export function generateAnalogousScales(baseColor: string, steps: number = 5): {
       const newS = s + (position > 0.5 ? 5 : -5);
 
       scale.push({
-        name: `analogous-${hue}-${(i + 1) * 100}`,
+        name: `analogous-${hue}-${i}`,
         value: hslToHex(hue, newS, newL),
         type: 'color',
         description: `相似色 ${hue}`

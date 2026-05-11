@@ -46,8 +46,13 @@ export function useColorGenerator(): UseColorGeneratorReturn {
       ...generateSemanticColors(config.scaleCount)
     } : null;
 
-    const extendedSemantic: ExtendedSemantic | null = config.includeExtended ? {
-      ...generateExtendedSemantic(normalizedColor)
+    const extendedSemantic: ExtendedSemantic | null = config.includeExtended && neutralColorScale && semanticColors ? {
+      ...generateExtendedSemantic(
+        themeColorScale.scale,
+        neutralColorScale.scale,
+        semanticColors,
+        config.scaleCount
+      )
     } : null;
 
     return {

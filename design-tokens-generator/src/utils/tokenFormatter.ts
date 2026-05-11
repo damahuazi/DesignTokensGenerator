@@ -267,46 +267,32 @@ export function generateSampleTokensStudioJson(): ExportFormat {
     tokens: {
       color: {
         primary: {
-          '50': { value: '#f0f9ff', type: 'color' },
-          '100': { value: '#e0f2fe', type: 'color' },
-          '200': { value: '#bae6fd', type: 'color' },
-          '300': { value: '#7dd3fc', type: 'color' },
-          '400': { value: '#38bdf8', type: 'color' },
-          '500': { value: '#0ea5e9', type: 'color' },
-          '600': { value: '#0284c7', type: 'color' },
-          '700': { value: '#0369a1', type: 'color' },
-          '800': { value: '#075985', type: 'color' },
-          '900': { value: '#0c4a6e', type: 'color' }
+          '0': { value: '#f0f9ff', type: 'color' },
+          '1': { value: '#e0f2fe', type: 'color' },
+          '2': { value: '#bae6fd', type: 'color' },
+          '3': { value: '#7dd3fc', type: 'color' },
+          '4': { value: '#38bdf8', type: 'color' },
+          '5': { value: '#0ea5e9', type: 'color' },
+          '6': { value: '#0284c7', type: 'color' },
+          '7': { value: '#0369a1', type: 'color' },
+          '8': { value: '#075985', type: 'color' },
+          '9': { value: '#0c4a6e', type: 'color' }
         },
         neutral: {
-          '50': { value: '#fafafa', type: 'color' },
-          '500': { value: '#71717a', type: 'color' },
-          '900': { value: '#18181b', type: 'color' }
+          '0': { value: '#fafafa', type: 'color' },
+          '5': { value: '#71717a', type: 'color' },
+          '9': { value: '#18181b', type: 'color' }
         },
         semantic: {
           success: {
-            '50': { value: '#f0fdf4', type: 'color' },
-            '100': { value: '#dcfce7', type: 'color' },
-            '200': { value: '#bbf7d0', type: 'color' },
-            '300': { value: '#86efac', type: 'color' },
-            '400': { value: '#4ade80', type: 'color' },
-            '500': { value: '#22c55e', type: 'color' },
-            '600': { value: '#16a34a', type: 'color' },
-            '700': { value: '#15803d', type: 'color' },
-            '800': { value: '#166534', type: 'color' },
-            '900': { value: '#14532d', type: 'color' }
+            '0': { value: '#f0fdf4', type: 'color' },
+            '5': { value: '#22c55e', type: 'color' },
+            '9': { value: '#14532d', type: 'color' }
           },
           danger: {
-            '50': { value: '#fef2f2', type: 'color' },
-            '100': { value: '#fee2e2', type: 'color' },
-            '200': { value: '#fecaca', type: 'color' },
-            '300': { value: '#fca5a5', type: 'color' },
-            '400': { value: '#f87171', type: 'color' },
-            '500': { value: '#ef4444', type: 'color' },
-            '600': { value: '#dc2626', type: 'color' },
-            '700': { value: '#b91c1c', type: 'color' },
-            '800': { value: '#991b1b', type: 'color' },
-            '900': { value: '#7f1d1d', type: 'color' }
+            '0': { value: '#fef2f2', type: 'color' },
+            '5': { value: '#ef4444', type: 'color' },
+            '9': { value: '#7f1d1d', type: 'color' }
           }
         }
       }
