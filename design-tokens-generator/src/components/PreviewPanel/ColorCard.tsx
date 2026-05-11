@@ -9,10 +9,9 @@ import type { ColorToken, ExtendedSemanticColor } from '../../types';
 
 interface ColorCardProps {
   color: ColorToken | ExtendedSemanticColor;
-  size?: 'sm' | 'md' | 'lg';
 }
 
-export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
+export const ColorCard: React.FC<ColorCardProps> = ({ color }) => {
   const [isCopied, setIsCopied] = useState(false);
   const contrastColor = getContrastColor(color.value);
 
@@ -31,37 +30,26 @@ export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
     }
   };
 
-  const minHeightClass = {
-    sm: 'min-h-[100px]',
-    md: 'min-h-[120px]',
-    lg: 'min-h-[140px]'
-  };
-
-  const displayName = color.name.length > 16 
-    ? color.name.substring(0, 16) + '...' 
-    : color.name;
-
   return (
-    <div className="group h-full">
+    <div className="group h-full min-h-[100px]">
       <div
-        className={`${minHeightClass[size]} h-full rounded-xl transition-all duration-200 cursor-pointer
-          hover:scale-[1.02] hover:shadow-xl relative overflow-hidden flex flex-col`}
+        className="h-full min-h-[100px] rounded-xl transition-all duration-200 cursor-pointer
+          hover:scale-[1.02] hover:shadow-xl relative overflow-hidden flex flex-col"
         style={{ backgroundColor: color.value }}
         onClick={handleCopy}
       >
         <div className="flex items-start justify-between p-3">
           <span
-            className="text-xs font-medium px-2 py-1 rounded bg-white/20 backdrop-blur-sm"
+            className="text-xs font-medium px-2 py-1 rounded bg-white/20 backdrop-blur-sm max-w-[70%] break-words"
             style={{ color: contrastColor }}
-            title={color.name}
           >
-            {displayName}
+            {color.name}
           </span>
 
           <button
             onClick={handleCopy}
             className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm opacity-0 group-hover:opacity-100
-              transition-all hover:bg-white/30"
+              transition-all hover:bg-white/30 flex-shrink-0"
             title="复制颜色值"
           >
             {isCopied ? (
