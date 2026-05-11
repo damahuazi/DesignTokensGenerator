@@ -177,25 +177,25 @@ export function generateExtendedSemantic(
       default: createStaticColor(
         'background-default',
         '#ffffff',
-        '默认背景色 - 固定值 white'
+        '默认背景色'
       ),
       subtle: createReferencedColor(
         'background-subtle',
         neutralColorScale.scale[neutralLastIndex].value,
         `{color.neutral.${neutralLastIndex}}`,
-        `浅背景色 - 引用 neutral.${neutralLastIndex}`
+        '浅背景色'
       ),
       muted: createReferencedColor(
         'background-muted',
         neutralColorScale.scale[neutralMidIndex].value,
         `{color.neutral.${neutralMidIndex}}`,
-        `柔和背景色 - 引用 neutral.${neutralMidIndex}`
+        '柔和背景色'
       ),
       inverse: createReferencedColor(
         'background-inverse',
         themeColorScale.scale[scaleCount - 1].value,
         `{color.primary.${scaleCount - 1}}`,
-        `反色背景 - 引用 primary.${scaleCount - 1}`
+        '反色背景'
       )
     },
     foreground: {
@@ -203,24 +203,24 @@ export function generateExtendedSemantic(
         'foreground-default',
         neutralColorScale.scale[1].value,
         '{color.neutral.1}',
-        '默认文字色 - 引用 neutral.1'
+        '默认文字色'
       ),
       muted: createReferencedColor(
         'foreground-muted',
         neutralColorScale.scale[neutralMutedIndex].value,
         `{color.neutral.${neutralMutedIndex}}`,
-        `柔和文字色 - 引用 neutral.${neutralMutedIndex}`
+        '柔和文字色'
       ),
       subtle: createReferencedColor(
         'foreground-subtle',
         neutralColorScale.scale[neutralSubtleIndex].value,
         `{color.neutral.${neutralSubtleIndex}}`,
-        `浅文字色 - 引用 neutral.${neutralSubtleIndex}`
+        '浅文字色'
       ),
       inverse: createStaticColor(
         'foreground-inverse',
         '#ffffff',
-        '反色文字 - 固定值 white'
+        '反色文字'
       )
     },
     border: {
@@ -228,19 +228,19 @@ export function generateExtendedSemantic(
         'border-default',
         neutralColorScale.scale[neutralBorderIndex].value,
         `{color.neutral.${neutralBorderIndex}}`,
-        `默认边框色 - 引用 neutral.${neutralBorderIndex}`
+        '默认边框色'
       ),
       muted: createReferencedColor(
         'border-muted',
         neutralColorScale.scale[neutralBorderMutedIndex].value,
         `{color.neutral.${neutralBorderMutedIndex}}`,
-        `柔和边框色 - 引用 neutral.${neutralBorderMutedIndex}`
+        '柔和边框色'
       ),
       subtle: createReferencedColor(
         'border-subtle',
         neutralColorScale.scale[neutralMidIndex].value,
         `{color.neutral.${neutralMidIndex}}`,
-        `浅边框色 - 引用 neutral.${neutralMidIndex}`
+        '浅边框色'
       )
     },
     ring: {
@@ -248,7 +248,7 @@ export function generateExtendedSemantic(
         'ring-default',
         themeColorScale.scale[midIndex].value,
         `{color.primary.${midIndex}}`,
-        `焦点环 - 引用 primary.${midIndex}`
+        '焦点环'
       )
     },
     overlay: {
@@ -256,7 +256,7 @@ export function generateExtendedSemantic(
         'overlay-default',
         neutralColorScale.scale[scaleCount - 2].value,
         `{color.neutral.${scaleCount - 2}}`,
-        `遮罩层 - 引用 neutral.${scaleCount - 2}`
+        '遮罩层'
       )
     },
     accent: {
@@ -264,13 +264,13 @@ export function generateExtendedSemantic(
         'accent-default',
         themeColorScale.scale[midIndex].value,
         `{color.primary.${midIndex}}`,
-        `强调色 - 引用 primary.${midIndex}`
+        '强调色'
       ),
       foreground: createReferencedColor(
         'accent-foreground',
         neutralColorScale.scale[neutralLastIndex].value,
         `{color.neutral.${neutralLastIndex}}`,
-        `强调色上的文字 - 引用 neutral.${neutralLastIndex}`
+        '强调色上的文字'
       )
     },
     destructive: {
@@ -278,12 +278,12 @@ export function generateExtendedSemantic(
         'destructive-default',
         semanticColors.danger[midIndex].value,
         `{color.semantic.danger.${midIndex}}`,
-        `破坏性操作 - 引用 semantic.danger.${midIndex}`
+        '破坏性操作'
       ),
       foreground: createStaticColor(
         'destructive-foreground',
         '#ffffff',
-        '破坏性操作色上的文字 - 固定值 white'
+        '破坏性操作色上的文字'
       )
     },
     input: {
@@ -291,13 +291,13 @@ export function generateExtendedSemantic(
         'input-default',
         neutralColorScale.scale[0].value,
         '{color.neutral.0}',
-        '输入框背景 - 引用 neutral.0'
+        '输入框背景'
       ),
       border: createReferencedColor(
         'input-border',
         neutralColorScale.scale[neutralBorderMutedIndex].value,
         `{color.neutral.${neutralBorderMutedIndex}}`,
-        `输入框边框 - 引用 neutral.${neutralBorderMutedIndex}`
+        '输入框边框'
       )
     }
   };

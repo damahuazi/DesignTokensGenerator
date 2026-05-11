@@ -3,18 +3,22 @@
  */
 
 import React, { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Link2 } from 'lucide-react';
 import { getContrastColor } from '../../utils/colorConversion';
-import type { ColorToken } from '../../types';
+import type { ColorToken, ExtendedSemanticColor } from '../../types';
 
 interface ColorCardProps {
-  color: ColorToken;
+  color: ColorToken | ExtendedSemanticColor;
   size?: 'sm' | 'md' | 'lg';
 }
 
 export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
   const [isCopied, setIsCopied] = useState(false);
   const contrastColor = getContrastColor(color.value);
+
+  const hasReference = 'reference' in color && color.reference;
+  const description = color.description?.replace(/ - 引用.*$/, '').replace(/ - 固定值.*$/, '');
+  const reference = hasReference ? color.reference : null;
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -64,20 +68,31 @@ export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
             </button>
           </div>
 
-          <div>
+          <div className="space-y-1">
             <p
               className="font-mono text-sm font-semibold"
               style={{ color: contrastColor }}
             >
               {color.value}
             </p>
-            {color.description && (
+
+            {description && (
               <p
-                className="text-xs mt-0.5 opacity-80"
+                className="text-xs leading-tight opacity-90"
                 style={{ color: contrastColor }}
               >
-                {color.description}
+                {description}
               </p>
+            )}
+
+            {reference && (
+              <div
+                className="flex items-center gap-1 text-xs opacity-75"
+                style={{ color: contrastColor }}
+              >
+                <Link2 className="w-3 h-3" />
+                <span className="font-mono">{reference}</span>
+              </div>
             )}
           </div>
         </div>
