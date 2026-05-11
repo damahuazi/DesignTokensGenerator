@@ -31,17 +31,17 @@ export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
     }
   };
 
-  const sizeClasses = {
-    sm: 'h-16',
-    md: 'h-24',
-    lg: 'h-32'
+  const minHeightClass = {
+    sm: 'min-h-[80px]',
+    md: 'min-h-[100px]',
+    lg: 'min-h-[120px]'
   };
 
   return (
-    <div className="group relative">
+    <div className="group h-full">
       <div
-        className={`${sizeClasses[size]} rounded-xl transition-all duration-200 cursor-pointer
-          hover:scale-105 hover:shadow-xl relative overflow-hidden`}
+        className={`${minHeightClass[size]} h-full rounded-xl transition-all duration-200 cursor-pointer
+          hover:scale-[1.02] hover:shadow-xl relative overflow-hidden`}
         style={{ backgroundColor: color.value }}
         onClick={handleCopy}
       >
@@ -90,8 +90,8 @@ export const ColorCard: React.FC<ColorCardProps> = ({ color, size = 'md' }) => {
                 className="flex items-center gap-1 text-xs opacity-75"
                 style={{ color: contrastColor }}
               >
-                <Link2 className="w-3 h-3" />
-                <span className="font-mono">{reference}</span>
+                <Link2 className="w-3 h-3 flex-shrink-0" />
+                <span className="font-mono truncate">{reference}</span>
               </div>
             )}
           </div>

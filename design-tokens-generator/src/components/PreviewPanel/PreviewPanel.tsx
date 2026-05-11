@@ -44,6 +44,8 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
     );
   }
 
+  const gridColsClass = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5';
+
   const renderThemeColors = () => (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
@@ -52,7 +54,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
           {tokens.themeColorScale.scale.length} 个颜色
         </span>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className={`grid ${gridColsClass} gap-4 auto-rows-auto`}>
         {tokens.themeColorScale.scale.map((color) => (
           <ColorCard key={color.name} color={color} />
         ))}
@@ -70,7 +72,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
             {tokens.neutralColorScale.scale.length} 个颜色
           </span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className={`grid ${gridColsClass} gap-4 auto-rows-auto`}>
           {tokens.neutralColorScale.scale.map((color) => (
             <ColorCard key={color.name} color={color} />
           ))}
@@ -110,7 +112,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
             </button>
 
             {!collapsedSections[section.key] && (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+              <div className={`grid ${gridColsClass} gap-4 auto-rows-auto`}>
                 {section.colors.map((color) => (
                   <ColorCard key={color.name} color={color} />
                 ))}
@@ -126,198 +128,54 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
     if (!tokens.extendedSemantic) return null;
     const { extendedSemantic } = tokens;
 
+    const renderColorGroup = (
+      title: string,
+      colors: Record<string, { name: string; value: string; type: string; description?: string; reference?: string }>,
+      colsClass: string
+    ) => (
+      <div>
+        <button
+          onClick={() => toggleSection(title.toLowerCase())}
+          className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
+        >
+          {collapsedSections[title.toLowerCase()] ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronDown className="w-4 h-4" />
+          )}
+          {title}
+        </button>
+        {!collapsedSections[title.toLowerCase()] && (
+          <div className={`grid ${colsClass} gap-4 auto-rows-auto`}>
+            {Object.entries(colors).map(([key, color]) => (
+              <ColorCard key={key} color={color} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-text-primary">扩展语义色</h3>
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <button
-              onClick={() => toggleSection('background')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['background'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              背景色
-            </button>
-            {!collapsedSections['background'] && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.background.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.background.subtle} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.background.muted} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">inverse</p>
-                  <ColorCard color={extendedSemantic.background.inverse} size="md" />
-                </div>
-              </div>
-            )}
-          </div>
+        {renderColorGroup('背景色', extendedSemantic.background, 'grid-cols-2 md:grid-cols-4')}
+        {renderColorGroup('文字色', extendedSemantic.foreground, 'grid-cols-2 md:grid-cols-4')}
+        {renderColorGroup('边框色', extendedSemantic.border, 'grid-cols-3')}
+        {renderColorGroup('强调色', extendedSemantic.accent, 'grid-cols-2 md:grid-cols-3')}
+        {renderColorGroup('破坏性', extendedSemantic.destructive, 'grid-cols-2 md:grid-cols-3')}
+        {renderColorGroup('输入框', extendedSemantic.input, 'grid-cols-2 md:grid-cols-3')}
 
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
           <div>
-            <button
-              onClick={() => toggleSection('foreground')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['foreground'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              文字色
-            </button>
-            {!collapsedSections['foreground'] && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.foreground.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.foreground.muted} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.foreground.subtle} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">inverse</p>
-                  <ColorCard color={extendedSemantic.foreground.inverse} size="md" />
-                </div>
-              </div>
-            )}
+            <p className="text-xs text-text-secondary mb-1">焦点环 (ring)</p>
+            <ColorCard color={extendedSemantic.ring.default} />
           </div>
-
           <div>
-            <button
-              onClick={() => toggleSection('border')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['border'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              边框色
-            </button>
-            {!collapsedSections['border'] && (
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.border.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.border.muted} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.border.subtle} size="md" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleSection('accent')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['accent'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              强调色
-            </button>
-            {!collapsedSections['accent'] && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.accent.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">foreground</p>
-                  <ColorCard color={extendedSemantic.accent.foreground} size="md" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleSection('destructive')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['destructive'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              破坏性
-            </button>
-            {!collapsedSections['destructive'] && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.destructive.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">foreground</p>
-                  <ColorCard color={extendedSemantic.destructive.foreground} size="md" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <button
-              onClick={() => toggleSection('input')}
-              className="flex items-center gap-2 text-sm font-medium text-text-primary hover:text-primary transition-colors mb-2"
-            >
-              {collapsedSections['input'] ? (
-                <ChevronRight className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-              输入框
-            </button>
-            {!collapsedSections['input'] && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.input.default} size="md" />
-                </div>
-                <div>
-                  <p className="text-xs text-text-secondary mb-1">border</p>
-                  <ColorCard color={extendedSemantic.input.border} size="md" />
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
-            <div>
-              <p className="text-xs text-text-secondary mb-1">焦点环 (ring)</p>
-              <ColorCard color={extendedSemantic.ring.default} size="md" />
-            </div>
-            <div>
-              <p className="text-xs text-text-secondary mb-1">遮罩层 (overlay)</p>
-              <ColorCard color={extendedSemantic.overlay.default} size="md" />
-            </div>
+            <p className="text-xs text-text-secondary mb-1">遮罩层 (overlay)</p>
+            <ColorCard color={extendedSemantic.overlay.default} />
           </div>
         </div>
       </div>
