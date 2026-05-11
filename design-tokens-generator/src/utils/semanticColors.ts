@@ -217,7 +217,7 @@ export function generateExtendedSemantic(
     overlay: {
       default: {
         name: 'overlay-default',
-        value: 'rgba(0, 0, 0, 0.5)',
+        value: '#000000',
         type: 'color',
         description: '遮罩层'
       }

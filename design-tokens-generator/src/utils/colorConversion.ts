@@ -6,7 +6,11 @@
  * 将 HEX 颜色转换为 RGB
  */
 export function hexToRgb(hex: string): [number, number, number] {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  let h = hex.replace('#', '');
+  if (h.length === 3) {
+    h = h.split('').map(c => c + c).join('');
+  }
+  const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
   if (!result) {
     throw new Error('Invalid HEX color');
   }
@@ -15,6 +19,26 @@ export function hexToRgb(hex: string): [number, number, number] {
     parseInt(result[2], 16),
     parseInt(result[3], 16)
   ];
+}
+
+/**
+ * 将 RGBA/RGB 字符串解析为 RGB 值
+ */
+export function parseColor(color: string): [number, number, number] {
+  if (color.startsWith('#')) {
+    return hexToRgb(color);
+  }
+  
+  const rgbaMatch = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*[\d.]+\s*)?\)/i.exec(color);
+  if (rgbaMatch) {
+    return [
+      parseInt(rgbaMatch[1], 10),
+      parseInt(rgbaMatch[2], 10),
+      parseInt(rgbaMatch[3], 10)
+    ];
+  }
+  
+  return [128, 128, 128];
 }
 
 /**
@@ -137,18 +161,22 @@ export function adjustSaturation(hex: string, amount: number): string {
 /**
  * 获取颜色的对比色（黑或白）
  */
-export function getContrastColor(hex: string): string {
-  const [r, g, b] = hexToRgb(hex);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? '#000000' : '#FFFFFF';
+export function getContrastColor(color: string): string {
+  try {
+    const [r, g, b] = parseColor(color);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
+  } catch (e) {
+    return '#000000';
+  }
 }
 
 /**
  * 计算 WCAG 对比度
  */
-export function getContrastRatio(hex1: string, hex2: string): number {
-  const getLuminance = (hex: string) => {
-    const [r, g, b] = hexToRgb(hex).map(v => {
+export function getContrastRatio(color1: string, color2: string): number {
+  const getLuminance = (c: string) => {
+    const [r, g, b] = parseColor(c).map(v => {
       const sRGB = v / 255;
       return sRGB <= 0.03928
         ? sRGB / 12.92
@@ -157,8 +185,8 @@ export function getContrastRatio(hex1: string, hex2: string): number {
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   };
 
-  const l1 = getLuminance(hex1);
-  const l2 = getLuminance(hex2);
+  const l1 = getLuminance(color1);
+  const l2 = getLuminance(color2);
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
 
