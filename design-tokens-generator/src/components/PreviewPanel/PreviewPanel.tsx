@@ -149,19 +149,19 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.background.default} size="sm" />
+                  <ColorCard color={extendedSemantic.background.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.background.subtle} size="sm" />
+                  <ColorCard color={extendedSemantic.background.subtle} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.background.muted} size="sm" />
+                  <ColorCard color={extendedSemantic.background.muted} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">inverse</p>
-                  <ColorCard color={extendedSemantic.background.inverse} size="sm" />
+                  <ColorCard color={extendedSemantic.background.inverse} size="md" />
                 </div>
               </div>
             )}
@@ -183,19 +183,19 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.foreground.default} size="sm" />
+                  <ColorCard color={extendedSemantic.foreground.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.foreground.muted} size="sm" />
+                  <ColorCard color={extendedSemantic.foreground.muted} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.foreground.subtle} size="sm" />
+                  <ColorCard color={extendedSemantic.foreground.subtle} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">inverse</p>
-                  <ColorCard color={extendedSemantic.foreground.inverse} size="sm" />
+                  <ColorCard color={extendedSemantic.foreground.inverse} size="md" />
                 </div>
               </div>
             )}
@@ -217,15 +217,15 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.border.default} size="sm" />
+                  <ColorCard color={extendedSemantic.border.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">muted</p>
-                  <ColorCard color={extendedSemantic.border.muted} size="sm" />
+                  <ColorCard color={extendedSemantic.border.muted} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">subtle</p>
-                  <ColorCard color={extendedSemantic.border.subtle} size="sm" />
+                  <ColorCard color={extendedSemantic.border.subtle} size="md" />
                 </div>
               </div>
             )}
@@ -247,11 +247,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.accent.default} size="sm" />
+                  <ColorCard color={extendedSemantic.accent.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">foreground</p>
-                  <ColorCard color={extendedSemantic.accent.foreground} size="sm" />
+                  <ColorCard color={extendedSemantic.accent.foreground} size="md" />
                 </div>
               </div>
             )}
@@ -273,11 +273,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.destructive.default} size="sm" />
+                  <ColorCard color={extendedSemantic.destructive.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">foreground</p>
-                  <ColorCard color={extendedSemantic.destructive.foreground} size="sm" />
+                  <ColorCard color={extendedSemantic.destructive.foreground} size="md" />
                 </div>
               </div>
             )}
@@ -299,11 +299,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-xs text-text-secondary mb-1">default</p>
-                  <ColorCard color={extendedSemantic.input.default} size="sm" />
+                  <ColorCard color={extendedSemantic.input.default} size="md" />
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-1">border</p>
-                  <ColorCard color={extendedSemantic.input.border} size="sm" />
+                  <ColorCard color={extendedSemantic.input.border} size="md" />
                 </div>
               </div>
             )}
@@ -312,11 +312,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ tokens }) => {
           <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
             <div>
               <p className="text-xs text-text-secondary mb-1">焦点环 (ring)</p>
-              <ColorCard color={extendedSemantic.ring.default} size="sm" />
+              <ColorCard color={extendedSemantic.ring.default} size="md" />
             </div>
             <div>
               <p className="text-xs text-text-secondary mb-1">遮罩层 (overlay)</p>
-              <ColorCard color={extendedSemantic.overlay.default} size="sm" />
+              <ColorCard color={extendedSemantic.overlay.default} size="md" />
             </div>
           </div>
         </div>

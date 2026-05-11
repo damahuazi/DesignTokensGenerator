@@ -2,7 +2,7 @@
  * 语义色生成算法
  */
 
-import { hslToHex, hexToHsl } from './colorConversion';
+import { hslToHex } from './colorConversion';
 import type { SemanticColors, SemanticColorScale, ExtendedSemantic, ColorToken } from '../types';
 
 /**
@@ -130,13 +130,7 @@ export function generateExtendedSemantic(
   semanticColors: SemanticColors,
   scaleCount: number
 ): ExtendedSemantic {
-  const [themeH, themeS] = hexToHsl(themeColorScale[Math.floor(scaleCount / 2)].value);
   const midIndex = Math.floor(scaleCount / 2);
-
-  const getColor = (scale: ColorToken[], index: number): ColorToken => {
-    const safeIndex = Math.min(index, scale.length - 1);
-    return scale[safeIndex];
-  };
 
   return {
     background: {
