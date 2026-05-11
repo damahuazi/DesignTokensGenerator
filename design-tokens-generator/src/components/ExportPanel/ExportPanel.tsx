@@ -2,7 +2,7 @@
  * 导出面板组件
  */
 
-import React from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Copy, Download, Check, Code, FileJson } from 'lucide-react';
 import type { GeneratedTokens } from '../../types';
 
@@ -25,15 +25,67 @@ export const ExportPanel: React.FC<ExportPanelProps> = ({
   isCopied,
   isDownloading
 }) => {
-  React.useEffect(() => {
+  const [height, setHeight] = useState(400);
+  const [isResizing, setIsResizing] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const startYRef = useRef(0);
+  const startHeightRef = useRef(0);
+
+  useEffect(() => {
     if (tokens) {
       onGeneratePreview(tokens);
     }
   }, [tokens, onGeneratePreview]);
 
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+    startYRef.current = e.clientY;
+    startHeightRef.current = height;
+  }, [height]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+
+      const delta = startYRef.current - e.clientY;
+      const newHeight = Math.max(200, Math.min(800, startHeightRef.current + delta));
+      setHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ns-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
+
   return (
-    <div className="border-t border-border bg-background-card">
-      <div className="p-6">
+    <div ref={panelRef} className="border-t border-border bg-background-card" style={{ userSelect: 'none' }}>
+      <div
+        className={`h-2 flex items-center justify-center cursor-ns-resize transition-colors ${
+          isResizing ? 'bg-primary/20' : 'hover:bg-primary/10'
+        }`}
+        onMouseDown={handleMouseDown}
+      >
+        <div className={`w-12 h-1 rounded-full transition-colors ${
+          isResizing ? 'bg-primary' : 'bg-border-light'
+        }`} />
+      </div>
+
+      <div className="p-6" style={{ height: height - 8, overflow: 'hidden' }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <FileJson className="w-5 h-5 text-primary" />
@@ -88,14 +140,14 @@ export const ExportPanel: React.FC<ExportPanelProps> = ({
           </div>
         </div>
 
-        <div className="relative">
-          <div className="bg-background rounded-xl border border-border overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2 bg-background-hover border-b border-border">
+        <div className="relative" style={{ height: height - 100 }}>
+          <div className="bg-background rounded-xl border border-border overflow-hidden h-full flex flex-col">
+            <div className="flex items-center gap-2 px-4 py-2 bg-background-hover border-b border-border flex-shrink-0">
               <Code className="w-4 h-4 text-text-secondary" />
               <span className="text-xs text-text-secondary font-medium">JSON Preview</span>
             </div>
 
-            <div className="max-h-96 overflow-y-auto scrollbar-thin">
+            <div className="flex-1 overflow-y-auto scrollbar-thin">
               {jsonPreview ? (
                 <pre className="p-4 text-xs font-mono text-text-primary leading-relaxed whitespace-pre-wrap break-words">
                   {jsonPreview}
